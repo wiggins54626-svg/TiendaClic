@@ -22,6 +22,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'rol', 
+        'activo', 
+        'acepta_politica_datos', 
+        'fecha_autorizacion_datos'
     ];
 
     /**
