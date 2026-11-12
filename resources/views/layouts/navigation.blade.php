@@ -1,118 +1,89 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
-    <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
-                    </a>
-                </div>
+<div x-data="{ open: false }" @keydown.escape.window="open = false">
+    <!-- Barra superior (móvil) -->
+    <div class="lg:hidden sticky top-0 z-30 flex h-14 items-center justify-between border-b border-line bg-side/95 px-4 backdrop-blur">
+        <a href="{{ route('dashboard') }}" aria-label="Tienda Clic">
+            <x-application-logo class="h-8 w-auto" />
+        </a>
 
-                <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-nav-link>
-                </div>
-                      <x-nav-link :href="route('catalogo.index')" :active="request()->routeIs('catalogo.*')">
-                    Catálogo
-                    </x-nav-link>
-                    <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')">
-                    Categorías
-                    </x-nav-link>
-                    <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.*')">
-                    Productos
-                    </x-nav-link>
-                    <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')">
-                    Usuarios
-                    </x-nav-link>
-                    <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.*')">
-                    Carrito
-                    </x-nav-link>
-                    <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*')">
-                     Pedidos
-                    </x-nav-link>
-            </div>
-
-            <!-- Settings Dropdown -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->name }}</div>
-
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
-
-                        <!-- Authentication -->
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
-                        </form>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <!-- Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
-        </div>
+        <button @click="open = true" type="button"
+                class="inline-flex items-center justify-center rounded-lg p-2 text-ink-soft hover:bg-raised hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+                aria-label="Abrir menú">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
     </div>
 
-    <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-        <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+    <!-- Fondo oscuro al abrir el menú en móvil -->
+    <div x-show="open" x-transition.opacity @click="open = false"
+         class="fixed inset-0 z-40 bg-black/60 lg:hidden" style="display: none;"></div>
+
+    <!-- Barra lateral -->
+    <aside :class="open ? 'translate-x-0' : '-translate-x-full'"
+           class="fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r border-line bg-side transition-transform duration-200 lg:translate-x-0">
+
+        <!-- Logotipo -->
+        <div class="flex h-16 shrink-0 items-center justify-between px-5">
+            <a href="{{ route('dashboard') }}" aria-label="Tienda Clic, ir al panel">
+                <img src="{{ asset('images/brand/logotipo-claro.svg') }}" alt="Tienda Clic" class="h-7 w-auto">
+            </a>
+
+            <button @click="open = false" type="button"
+                    class="rounded-lg p-1.5 text-muted hover:bg-raised hover:text-ink lg:hidden" aria-label="Cerrar menú">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
         </div>
 
-        <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+        <!-- Enlaces -->
+        <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Principal">
+            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" icon="panel">
+                Panel
+            </x-nav-link>
+            <x-nav-link :href="route('catalogo.index')" :active="request()->routeIs('catalogo.*')" icon="catalogo">
+                Catálogo
+            </x-nav-link>
+            <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')" icon="categorias">
+                Categorías
+            </x-nav-link>
+            <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.*')" icon="productos">
+                Productos
+            </x-nav-link>
+            <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" icon="usuarios">
+                Usuarios
+            </x-nav-link>
+            <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.*')" icon="carrito">
+                Carrito
+            </x-nav-link>
+            <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*')" icon="pedidos">
+                Pedidos
+            </x-nav-link>
+        </nav>
+
+        <!-- Cuenta -->
+        <div class="border-t border-line p-3">
+            <div class="mb-2 flex items-center gap-3 px-3 py-2">
+                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-brand-500/20 text-sm font-semibold text-brand-300">
+                    {{ mb_strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
+                </div>
+                <div class="min-w-0">
+                    <div class="truncate text-sm font-medium text-ink">{{ Auth::user()->name }}</div>
+                    <div class="truncate text-xs text-muted">{{ Auth::user()->email }}</div>
+                </div>
             </div>
 
-            <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
+            <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.*')" icon="perfil">
+                Mi perfil
+            </x-nav-link>
 
-                <!-- Authentication -->
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
-                </form>
-            </div>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <x-nav-link :href="route('logout')" icon="salir"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                    Cerrar sesión
+                </x-nav-link>
+            </form>
         </div>
-    </div>
-</nav>
+    </aside>
+</div>
