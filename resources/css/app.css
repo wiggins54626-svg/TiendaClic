@@ -1,3 +1,134 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        color-scheme: dark;
+    }
+
+    body {
+        @apply bg-canvas text-ink;
+    }
+
+    ::selection {
+        @apply bg-brand-500/40;
+    }
+
+    /* Checkbox y radio en morado de marca */
+    [type='checkbox'],
+    [type='radio'] {
+        @apply bg-raised border-line text-brand-500 focus:ring-brand-400 focus:ring-offset-canvas;
+    }
+
+    /* Scrollbars discretos en tema oscuro */
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: #2B2B37 transparent;
+    }
+}
+
+/*
+ * Componentes de interfaz de Tienda Clic.
+ * Úsalos en cualquier vista nueva (productos, pedidos, carrito, usuarios…)
+ * para mantener la misma apariencia sin repetir clases de Tailwind.
+ */
+@layer components {
+    /* ---------- Tarjetas y encabezados ---------- */
+    .card {
+        @apply bg-surface border border-line rounded-xl;
+    }
+
+    .card-body {
+        @apply p-6;
+    }
+
+    .page-title {
+        @apply text-2xl font-semibold tracking-tight text-ink;
+    }
+
+    .section-title {
+        @apply text-lg font-semibold text-ink;
+    }
+
+    /* ---------- Botones ---------- */
+    .btn {
+        @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
+               transition duration-150 ease-in-out
+               focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-canvas
+               disabled:opacity-50 disabled:cursor-not-allowed;
+    }
+
+    .btn-primary {
+        @apply btn bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700;
+    }
+
+    .btn-secondary {
+        @apply btn bg-raised text-ink border border-line hover:bg-line;
+    }
+
+    .btn-danger {
+        @apply btn bg-bad/15 text-bad border border-bad/30 hover:bg-bad/25;
+    }
+
+    .btn-ghost {
+        @apply btn text-brand-300 hover:bg-brand-500/15;
+    }
+
+    /* ---------- Formularios ---------- */
+    .label {
+        @apply block text-sm font-medium text-ink-soft mb-1;
+    }
+
+    .input {
+        @apply block w-full rounded-lg bg-raised border border-line text-ink placeholder-muted shadow-none
+               focus:border-brand-400 focus:ring-1 focus:ring-brand-400;
+    }
+
+    select.input {
+        @apply pr-9;
+    }
+
+    /* ---------- Tablas ---------- */
+    .table-base {
+        @apply min-w-full divide-y divide-line text-sm;
+    }
+
+    .table-base thead {
+        @apply bg-raised text-ink-soft;
+    }
+
+    .table-base th {
+        @apply px-4 py-3 text-left font-medium;
+    }
+
+    .table-base td {
+        @apply px-4 py-3 text-ink-soft;
+    }
+
+    .table-base tbody {
+        @apply divide-y divide-line;
+    }
+
+    .table-base tbody tr {
+        @apply hover:bg-raised/60 transition-colors;
+    }
+
+    /* ---------- Etiquetas de estado ---------- */
+    .badge {
+        @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold border;
+    }
+
+    .badge-ok   { @apply badge bg-ok/15 text-ok border-ok/30; }
+    .badge-warn { @apply badge bg-warn/15 text-warn border-warn/30; }
+    .badge-bad  { @apply badge bg-bad/15 text-bad border-bad/30; }
+    .badge-info { @apply badge bg-brand-500/15 text-brand-300 border-brand-500/30; }
+
+    /* ---------- Alertas ---------- */
+    .alert {
+        @apply rounded-lg border px-4 py-3 text-sm;
+    }
+
+    .alert-ok  { @apply alert bg-ok/10 text-ok border-ok/30; }
+    .alert-bad { @apply alert bg-bad/10 text-bad border-bad/30; }
+}
