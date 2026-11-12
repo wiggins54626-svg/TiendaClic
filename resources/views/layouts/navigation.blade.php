@@ -16,6 +16,24 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                      <x-nav-link :href="route('catalogo.index')" :active="request()->routeIs('catalogo.*')">
+                    Catálogo
+                    </x-nav-link>
+                    <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')">
+                    Categorías
+                    </x-nav-link>
+                    <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.*')">
+                    Productos
+                    </x-nav-link>
+                    <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')">
+                    Usuarios
+                    </x-nav-link>
+                    <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.*')">
+                    Carrito
+                    </x-nav-link>
+                    <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*')">
+                     Pedidos
+                    </x-nav-link>
             </div>
 
             <!-- Settings Dropdown -->
