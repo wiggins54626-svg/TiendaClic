@@ -59,6 +59,12 @@
             <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*')" icon="pedidos">
                 Pedidos
             </x-nav-link>
+            <x-nav-link :href="route('gestion-pedidos.index')" :active="request()->routeIs('gestion-pedidos.*')">
+                Gestión de pedidos
+            </x-nav-link>
+            <x-nav-link :href="route('verificacion-pagos.index')" :active="request()->routeIs('verificacion-pagos.*')">
+                Verificar pagos
+            </x-nav-link>
         </nav>
 
         <!-- Cuenta -->
