@@ -14,6 +14,12 @@
             'entregado' => 'border-green-500 text-green-400 bg-green-500/10',
             'cancelado' => 'border-red-500 text-red-400 bg-red-500/10',
         ];
+
+        $coloresPago = [
+            'pendiente' => 'border-yellow-500 text-yellow-400 bg-yellow-500/10',
+            'confirmado' => 'border-green-500 text-green-400 bg-green-500/10',
+            'rechazado' => 'border-red-500 text-red-400 bg-red-500/10',
+        ];
     @endphp
 
     <div class="py-12">
@@ -27,6 +33,13 @@
                     @if (session('success'))
                         <div class="mb-4 rounded-md bg-green-500/10 border border-green-500 p-4 text-green-400">
                             {{ session('success') }}
+                        </div>
+                    @endif
+
+                    {{-- Mensaje de error --}}
+                    @if (session('error'))
+                        <div class="mb-4 rounded-md bg-red-500/10 border border-red-500 p-4 text-red-400">
+                            {{ session('error') }}
                         </div>
                     @endif
 
@@ -74,6 +87,13 @@
                             <p class="text-zinc-400">Ciudad</p>
                             <p>{{ $pedido->ciudad_envio }}</p>
                         </div>
+
+                        @if ($pedido->estado == 'cancelado')
+                            <div class="md:col-span-2">
+                                <p class="text-zinc-400">Motivo de cancelación</p>
+                                <p>{{ $pedido->motivo_cancelacion }}</p>
+                            </div>
+                        @endif
 
                     </div>
 
@@ -128,11 +148,108 @@
                         <span>${{ number_format($pedido->total, 0, ',', '.') }}</span>
                     </p>
 
-                    <div class="flex justify-end mt-6">
+                    {{-- Pago --}}
+                    <div class="mt-8 border-t border-zinc-700 pt-6">
+
+                        <h4 class="text-base font-semibold mb-3">
+                            Pago
+                        </h4>
+
+                        @if ($pago)
+
+                            <div class="flex flex-wrap items-center gap-3 text-sm mb-3">
+
+                                <span class="px-2 py-1 text-xs font-semibold rounded border {{ $coloresPago[$pago->estado] }}">
+                                    {{ ucfirst($pago->estado) }}
+                                </span>
+
+                                <span class="text-zinc-400">
+                                    Referencia: {{ $pago->referencia_transaccion }}
+                                </span>
+
+                            </div>
+
+                            @if ($pago->estado == 'pendiente')
+                                <p class="text-sm text-zinc-400">
+                                    Tu pago está pendiente de verificación por un colaborador.
+                                </p>
+                            @endif
+
+                        @else
+
+                            <p class="text-sm text-zinc-400 mb-3">
+                                Este pedido aún no tiene un pago registrado.
+                            </p>
+
+                        @endif
+
+                        {{-- Se puede pagar si no hay pago o si el último fue rechazado --}}
+                        @if ($pedido->estado != 'cancelado' && (! $pago || $pago->estado == 'rechazado'))
+                            <a href="{{ route('pagos.create', ['pedido' => $pedido->id]) }}"
+                               class="inline-flex items-center px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-md">
+                                Registrar pago
+                            </a>
+                        @endif
+
+                    </div>
+
+                    {{-- Línea de tiempo de estados --}}
+                    <div class="mt-8 border-t border-zinc-700 pt-6">
+
+                        <h4 class="text-base font-semibold mb-4">
+                            Seguimiento del pedido
+                        </h4>
+
+                        <ol class="relative border-l border-zinc-600 ml-2">
+
+                            @foreach ($historial as $registro)
+
+                                <li class="mb-4 ml-4">
+
+                                    <span class="absolute -left-1.5 mt-1.5 h-3 w-3 rounded-full bg-violet-500"></span>
+
+                                    <p class="text-sm font-semibold">
+                                        {{ ucfirst(str_replace('_', ' ', $registro->estado_nuevo)) }}
+                                    </p>
+
+                                    <p class="text-xs text-zinc-400">
+                                        {{ $registro->created_at->format('d/m/Y H:i') }}
+                                    </p>
+
+                                </li>
+
+                            @endforeach
+
+                        </ol>
+
+                    </div>
+
+                    {{-- Botones --}}
+                    <div class="flex justify-end gap-3 mt-6">
+
+                        @if ($pedido->estado == 'recibido')
+
+                            <form method="POST"
+                                  action="{{ route('pedidos.cancelar', $pedido->id) }}">
+
+                                @csrf
+                                @method('PUT')
+
+                                <button type="submit"
+                                        class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
+                                        onclick="return confirm('¿Está seguro de que desea cancelar este pedido?')">
+                                    Cancelar pedido
+                                </button>
+
+                            </form>
+
+                        @endif
+
                         <a href="{{ route('pedidos.index') }}"
                            class="inline-flex items-center px-4 py-2 bg-zinc-600 hover:bg-zinc-500 text-white text-sm font-medium rounded-md">
                             Volver a mis pedidos
                         </a>
+
                     </div>
 
                 </div>
