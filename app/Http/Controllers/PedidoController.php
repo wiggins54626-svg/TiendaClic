@@ -9,6 +9,7 @@ use App\Models\Pedido;
 use App\Models\PedidoItem;
 use App\Models\Producto;
 use App\Models\HistorialEstadoPedido;
+use App\Models\Pago;
 
 class PedidoController extends Controller
 {
@@ -125,7 +126,53 @@ class PedidoController extends Controller
 
         $items = PedidoItem::where('pedido_id', $pedido->id)->get();
 
-        return view('pedidos.show', compact('pedido', 'items'));
+        // Línea de tiempo de estados (HU-04)
+        $historial = HistorialEstadoPedido::where('pedido_id', $pedido->id)
+            ->orderBy('id')
+            ->get();
+
+        // Último pago registrado del pedido (HU-08)
+        $pago = Pago::where('pedido_id', $pedido->id)
+            ->orderBy('id', 'desc')
+            ->first();
+
+        return view('pedidos.show', compact('pedido', 'items', 'historial', 'pago'));
+    }
+
+    /**
+     * El cliente cancela su pedido (solo si está en estado Recibido).
+     */
+    public function cancelar(string $id)
+    {
+        $pedido = Pedido::where('id', $id)
+            ->where('usuario_id', auth()->id())
+            ->firstOrFail();
+
+        if ($pedido->estado != 'recibido') {
+            return redirect()->route('pedidos.show', $pedido->id)
+                ->with('error', 'Solo se puede cancelar un pedido en estado Recibido.');
+        }
+
+        // Se repone el stock de cada producto del pedido
+        foreach (PedidoItem::where('pedido_id', $pedido->id)->get() as $item) {
+            $producto = Producto::find($item->producto_id);
+            $producto->update(['stock' => $producto->stock + $item->cantidad]);
+        }
+
+        $pedido->update([
+            'estado' => 'cancelado',
+            'motivo_cancelacion' => 'Cancelado por el cliente',
+        ]);
+
+        HistorialEstadoPedido::create([
+            'pedido_id' => $pedido->id,
+            'estado_anterior' => 'recibido',
+            'estado_nuevo' => 'cancelado',
+            'usuario_id' => auth()->id(),
+        ]);
+
+        return redirect()->route('pedidos.show', $pedido->id)
+            ->with('success', 'Pedido cancelado. El stock fue repuesto.');
     }
 
     /**
