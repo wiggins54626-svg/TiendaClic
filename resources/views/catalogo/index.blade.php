@@ -34,6 +34,70 @@
                 </div>
             @endif
 
+            {{-- Búsqueda y filtros --}}
+            <form method="GET"
+                  action="{{ route('catalogo.index') }}"
+                  class="mb-6 grid grid-cols-1 md:grid-cols-5 gap-3 bg-zinc-800 border border-zinc-700 rounded-lg p-4">
+
+                <input
+                    type="text"
+                    name="buscar"
+                    value="{{ request('buscar') }}"
+                    placeholder="Buscar producto..."
+                    class="md:col-span-2 rounded-md border-zinc-600 bg-zinc-700 text-white text-sm focus:border-violet-500 focus:ring-violet-500"
+                >
+
+                <select
+                    name="categoria"
+                    class="rounded-md border-zinc-600 bg-zinc-700 text-white text-sm focus:border-violet-500 focus:ring-violet-500"
+                >
+                    <option value="">Todas las categorías</option>
+
+                    @foreach ($categorias as $id => $nombre)
+                        <option value="{{ $id }}" {{ request('categoria') == $id ? 'selected' : '' }}>
+                            {{ $nombre }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <div class="flex gap-2">
+
+                    <input
+                        type="number"
+                        name="precio_min"
+                        value="{{ request('precio_min') }}"
+                        placeholder="Precio mín."
+                        min="0"
+                        class="w-full rounded-md border-zinc-600 bg-zinc-700 text-white text-sm focus:border-violet-500 focus:ring-violet-500"
+                    >
+
+                    <input
+                        type="number"
+                        name="precio_max"
+                        value="{{ request('precio_max') }}"
+                        placeholder="Precio máx."
+                        min="0"
+                        class="w-full rounded-md border-zinc-600 bg-zinc-700 text-white text-sm focus:border-violet-500 focus:ring-violet-500"
+                    >
+
+                </div>
+
+                <div class="flex gap-2">
+
+                    <button type="submit"
+                            class="flex-1 px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white text-sm font-medium rounded-md">
+                        Filtrar
+                    </button>
+
+                    <a href="{{ route('catalogo.index') }}"
+                       class="px-4 py-2 bg-zinc-600 hover:bg-zinc-500 text-white text-sm font-medium rounded-md">
+                        Limpiar
+                    </a>
+
+                </div>
+
+            </form>
+
             {{-- Cuadrícula de productos --}}
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 
@@ -111,7 +175,11 @@
                 @empty
 
                     <div class="col-span-full p-6 text-center text-zinc-400 bg-zinc-800 border border-zinc-700 rounded-lg">
-                        No hay productos disponibles.
+                        @if (request()->hasAny(['buscar', 'categoria', 'precio_min', 'precio_max']))
+                            No se encontraron productos con esos filtros.
+                        @else
+                            No hay productos disponibles.
+                        @endif
                     </div>
 
                 @endforelse
