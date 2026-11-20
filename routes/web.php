@@ -12,24 +12,6 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\GestionPedidoController;
 use App\Http\Controllers\VerificacionPagoController;
-use App\Http\Controllers\InicioController;
-use App\Http\Controllers\ClienteDatosController;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
