@@ -38,33 +38,59 @@
 
         <!-- Enlaces -->
         <nav class="flex-1 space-y-1 overflow-y-auto px-3 py-4" aria-label="Principal">
-            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" icon="panel">
-                Panel
-            </x-nav-link>
-            <x-nav-link :href="route('catalogo.index')" :active="request()->routeIs('catalogo.*')" icon="catalogo">
-                Catálogo
-            </x-nav-link>
-            <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')" icon="categorias">
-                Categorías
-            </x-nav-link>
-            <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.*')" icon="productos">
-                Productos
-            </x-nav-link>
-            <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" icon="usuarios">
-                Usuarios
-            </x-nav-link>
-            <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.*')" icon="carrito">
-                Carrito
-            </x-nav-link>
-            <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*')" icon="pedidos">
-                Pedidos
-            </x-nav-link>
-            <x-nav-link :href="route('gestion-pedidos.index')" :active="request()->routeIs('gestion-pedidos.*')">
-                Gestión de pedidos
-            </x-nav-link>
-            <x-nav-link :href="route('verificacion-pagos.index')" :active="request()->routeIs('verificacion-pagos.*')">
-                Verificar pagos
-            </x-nav-link>
+
+            @if (Auth::user()->rol == 'cliente')
+
+                {{-- Menú del cliente --}}
+                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" icon="panel">
+                    Inicio
+                </x-nav-link>
+                <x-nav-link :href="route('catalogo.index')" :active="request()->routeIs('catalogo.*')" icon="catalogo">
+                    Catálogo
+                </x-nav-link>
+                <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.*')" icon="carrito">
+                    Mi carrito
+                </x-nav-link>
+                <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*', 'pagos.*')" icon="pedidos">
+                    Mis pedidos
+                </x-nav-link>
+                <x-nav-link :href="route('mis-datos.edit')" :active="request()->routeIs('mis-datos.*')" icon="perfil">
+                    Mis datos
+                </x-nav-link>
+
+            @else
+
+                {{-- Menú del administrador (enlaces actuales, sin cambios) --}}
+                <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" icon="panel">
+                    Panel
+                </x-nav-link>
+                <x-nav-link :href="route('catalogo.index')" :active="request()->routeIs('catalogo.*')" icon="catalogo">
+                    Catálogo
+                </x-nav-link>
+                <x-nav-link :href="route('categorias.index')" :active="request()->routeIs('categorias.*')" icon="categorias">
+                    Categorías
+                </x-nav-link>
+                <x-nav-link :href="route('productos.index')" :active="request()->routeIs('productos.*')" icon="productos">
+                    Productos
+                </x-nav-link>
+                <x-nav-link :href="route('usuarios.index')" :active="request()->routeIs('usuarios.*')" icon="usuarios">
+                    Usuarios
+                </x-nav-link>
+                <x-nav-link :href="route('carrito.index')" :active="request()->routeIs('carrito.*')" icon="carrito">
+                    Carrito
+                </x-nav-link>
+                <x-nav-link :href="route('pedidos.index')" :active="request()->routeIs('pedidos.*')" icon="pedidos">
+                    Pedidos
+                </x-nav-link>
+                <x-nav-link :href="route('gestion-pedidos.index')" :active="request()->routeIs('gestion-pedidos.*')">
+                    Gestión de pedidos
+                </x-nav-link>
+                <x-nav-link :href="route('verificacion-pagos.index')" :active="request()->routeIs('verificacion-pagos.*')">
+                    Verificar pagos
+                </x-nav-link>
+
+            @endif
+
         </nav>
 
         <!-- Cuenta -->
