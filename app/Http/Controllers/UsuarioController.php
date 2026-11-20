@@ -71,12 +71,19 @@ class UsuarioController extends Controller
     public function update(Request $request, User $usuario)
     {
         $request->validate([
+            
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $usuario->id,
             'password' => 'nullable|min:8',
             'rol' => 'required|in:cliente,colaborador,propietario',
             'activo' => 'required|in:0,1',
         ]);
+        
+        if ($usuario->id == auth()->id()
+        && ($request->rol != $usuario->rol || $request->activo == 0)) {
+        return redirect()->route('usuarios.index')
+        ->with('error', 'No puedes cambiar tu propio rol ni desactivarte.');
+        }
 
         $datos = [
             'name' => $request->name,
