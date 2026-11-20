@@ -12,6 +12,22 @@ use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\GestionPedidoController;
 use App\Http\Controllers\VerificacionPagoController;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,22 +40,26 @@ Route::get('/dashboard', [InicioController::class, 'index'])
 
 Route::middleware('auth')->group(function () {
 
-  
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Catálogo
     Route::get('/catalogo', [CatalogoController::class, 'index'])->name('catalogo.index');
     Route::get('/catalogo/{producto}', [CatalogoController::class, 'show'])->name('catalogo.show');
 
+    // Datos del cliente
     Route::get('/mis-datos', [ClienteDatosController::class, 'edit'])->name('mis-datos.edit');
     Route::put('/mis-datos', [ClienteDatosController::class, 'update'])->name('mis-datos.update');
 
+    // Carrito, pedidos y pagos del cliente
     Route::resource('carrito', CarritoController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::resource('pedidos', PedidoController::class)->only(['index', 'create', 'store', 'show']);
     Route::put('/pedidos/{pedido}/cancelar', [PedidoController::class, 'cancelar'])->name('pedidos.cancelar');
     Route::resource('pagos', PagoController::class)->only(['create', 'store']);
+
+
 
     Route::middleware('rol:propietario')->group(function () {
         Route::resource('usuarios', UsuarioController::class);
@@ -47,6 +67,7 @@ Route::middleware('auth')->group(function () {
         Route::resource('productos', ProductoController::class);
     });
 
+ 
     Route::middleware('rol:colaborador,propietario')->group(function () {
         Route::resource('gestion-pedidos', GestionPedidoController::class)->only(['index', 'show', 'update']);
         Route::resource('verificacion-pagos', VerificacionPagoController::class)->only(['index', 'update']);
