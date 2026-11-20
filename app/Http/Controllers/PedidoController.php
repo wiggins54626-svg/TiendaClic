@@ -10,6 +10,7 @@ use App\Models\PedidoItem;
 use App\Models\Producto;
 use App\Models\HistorialEstadoPedido;
 use App\Models\Pago;
+use App\Models\Cliente;
 
 class PedidoController extends Controller
 {
@@ -37,7 +38,9 @@ class PedidoController extends Controller
                 ->with('error', 'Tu carrito está vacío.');
         }
 
-        return view('pedidos.create', compact('items', 'total'));
+        $cliente = Cliente::find(auth()->id());
+
+        return view('pedidos.create', compact('items', 'total', 'cliente'));
     }
 
     /**
