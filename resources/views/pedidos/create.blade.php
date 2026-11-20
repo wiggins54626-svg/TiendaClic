@@ -12,6 +12,11 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
                 {{-- Datos de envío --}}
+                 <p class="mb-4 text-sm text-muted">
+                    Estos datos vienen de
+                    <a href="{{ route('mis-datos.edit') }}" class="text-brand-300 hover:text-brand-400">Mis datos</a>.
+                    Puedes cambiarlos solo para este pedido.
+                </p>
                 <div class="lg:col-span-2 bg-zinc-800 border border-zinc-700 overflow-hidden shadow-sm sm:rounded-lg">
 
                     <div class="p-6 text-zinc-100">
@@ -70,7 +75,7 @@
                                         type="text"
                                         id="telefono_contacto"
                                         name="telefono_contacto"
-                                        value="{{ old('telefono_contacto') }}"
+                                         value="{{ old('telefono_contacto', $cliente->telefono ?? '') }}"
                                         required
                                         class="w-full rounded-md border-zinc-600 bg-zinc-700 text-white shadow-sm focus:border-violet-500 focus:ring-violet-500 @error('telefono_contacto') border-red-500 @enderror"
                                     >
@@ -90,7 +95,7 @@
                                         type="text"
                                         id="direccion_envio"
                                         name="direccion_envio"
-                                        value="{{ old('direccion_envio') }}"
+                                        value="{{ old('direccion_envio', $cliente->direccion ?? '') }}"
                                         required
                                         class="w-full rounded-md border-zinc-600 bg-zinc-700 text-white shadow-sm focus:border-violet-500 focus:ring-violet-500 @error('direccion_envio') border-red-500 @enderror"
                                     >
@@ -105,7 +110,7 @@
                                         type="text"
                                         id="ciudad_envio"
                                         name="ciudad_envio"
-                                        value="{{ old('ciudad_envio') }}"
+                                        value="{{ old('ciudad_envio', $cliente->ciudad ?? '') }}"
                                         required
                                         class="w-full rounded-md border-zinc-600 bg-zinc-700 text-white shadow-sm focus:border-violet-500 focus:ring-violet-500 @error('ciudad_envio') border-red-500 @enderror"
                                     >
